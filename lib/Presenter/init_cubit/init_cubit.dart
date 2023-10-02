@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:sport_app/Model/local_storage/shared_preferences.dart';
 import 'package:sport_app/Model/models/remote_config_model.dart';
 import 'package:sport_app/Model/services/firebase_services/firebase_remote_config_services.dart';
+import 'package:sport_app/Presenter/repository.dart';
 
 part 'init_state.dart';
 
@@ -14,8 +15,9 @@ class InitCubit extends Cubit<InitState> {
   InitCubit(this.firebaseRemoteConfigService) : super(InitInitial());
 
   final FirebaseRemoteConfigService firebaseRemoteConfigService;
-
+  Repository repository = Repository();
   RemoteConfigModel? remoteConfig;
+  bool connect = false;
 
   void checkUrl() async {
     emit(Loading());
@@ -24,8 +26,8 @@ class InitCubit extends Cubit<InitState> {
       getUrl();
     } else {
       remoteConfig = RemoteConfigModel(url: data);
-      final connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult != ConnectivityResult.none && connectivityResult != ConnectivityResult.bluetooth) {
+      await checkInternet();
+      if (connect) {
         emit(ShowWebView());
       } else {
         emit(Error());
@@ -35,10 +37,9 @@ class InitCubit extends Cubit<InitState> {
 
   void getUrl() async {
     try {
-      final connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult != ConnectivityResult.none && connectivityResult != ConnectivityResult.bluetooth) {
-        final json = firebaseRemoteConfigService.getEventInfoJson();
-        remoteConfig = remoteConfigModelFromJson(json);
+      await checkInternet();
+      if (connect) {
+        remoteConfig = await repository.getUrl(firebaseRemoteConfigService);
         bool openPlug = await getDeviceInfo();
         if ((remoteConfig?.url ?? '').isEmpty || openPlug) {
           emit(ShowPlug());
@@ -71,4 +72,12 @@ class InitCubit extends Cubit<InitState> {
 
     return openPlug;
   }
+
+  Future<void> checkInternet() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult != ConnectivityResult.none && connectivityResult != ConnectivityResult.bluetooth) {
+      connect = true;
+    }
+  }
 }
+
