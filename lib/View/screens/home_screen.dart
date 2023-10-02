@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sport_app/Presenter/init_cubit/init_cubit.dart';
+import 'package:sport_app/View/consts/colors.dart';
+import 'package:sport_app/View/widgets/custom_error_widget.dart';
+import 'package:sport_app/View/widgets/custom_loading_widget.dart';
+import 'package:sport_app/View/widgets/plug_widget.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,8 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<InitCubit>(context).getData();
-    url = BlocProvider.of<InitCubit>(context).data?.url ?? '';
+    BlocProvider.of<InitCubit>(context).checkUrl();
   }
 
   String url = '';
@@ -47,9 +50,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<InitCubit, InitState>(
       builder: (context, state) {
-        return Scaffold(
-          body: SafeArea(
-            child: getHomeScreenWidget(state),
+        return WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: Scaffold(
+            backgroundColor: MainColors.kWhiteColor1,
+            body: SafeArea(
+              child: getHomeScreenWidget(state),
+            ),
           ),
         );
       },
@@ -60,16 +69,15 @@ class _HomeScreenState extends State<HomeScreen> {
     Widget homeScreenWidget = const SizedBox();
 
     if (state is Loading) {
-      homeScreenWidget = const Center(
-        child: CircularProgressIndicator(),
-      );
+      homeScreenWidget = const CustomLoadingWidget();
     } else if (state is Error) {
-      homeScreenWidget = const Center(
-        child: Text('Error'),
-      );
-    } else if (state is Success) {
+      homeScreenWidget = const CustomErrorWidget();
+    } else if (state is ShowWebView) {
+      url = BlocProvider.of<InitCubit>(context).remoteConfig?.url ?? '';
       _controller.loadRequest(Uri.parse(url));
       homeScreenWidget = WebViewWidget(controller: _controller);
+    } else if (state is ShowPlug) {
+      homeScreenWidget = PlugWidget();
     }
 
     return homeScreenWidget;
