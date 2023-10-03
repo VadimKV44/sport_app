@@ -41,22 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return false;
   }
 
-  // void getCookie() async {
-  //   final gotCookies = await cookieManager.getCookies('https://youtube.com');
-  //   for (var item in gotCookies) {
-  //     print(item);
-  //   }
-  // }
-  //
-  // void setCookie() async {
-  //   await cookieManager.setCookies([
-  //     Cookie('cookieName', 'cookieValue')
-  //       ..domain = 'youtube.com'
-  //       ..expires = DateTime.now().add(const Duration(days: 10))
-  //       ..httpOnly = false,
-  //   ]);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<InitCubit, InitState>(
