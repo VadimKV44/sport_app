@@ -19,44 +19,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  final Completer<WebViewController> _controller = Completer<WebViewController>();
+  final cookieManager = WebviewCookieManager();
+  final String cookieValue = 'some-cookie-value';
+  final String domain = 'youtube.com';
+  final String cookieName = 'some_cookie_name';
+
   @override
   void initState() {
     super.initState();
     BlocProvider.of<InitCubit>(context).checkUrl();
   }
-
-  String url = '';
-
-  // final WebViewController _controller = WebViewController();
-  // ..setJavaScriptMode(JavaScriptMode.unrestricted)
-  // ..setBackgroundColor(const Color(0x00000000))
-  // ..setNavigationDelegate(
-  //   NavigationDelegate(
-  //     onProgress: (int progress) {
-  //       // Update loading bar.
-  //     },
-  //     onPageStarted: (String url) {},
-  //     onPageFinished: (String url) {},
-  //     onWebResourceError: (WebResourceError error) {},
-  //     onNavigationRequest: (NavigationRequest request) {
-  //       if (request.url.startsWith('https://www.youtube.com/')) {
-  //         return NavigationDecision.prevent;
-  //       }
-  //       return NavigationDecision.navigate;
-  //     },
-  //   ),
-  // )
-  // ..loadRequest(Uri.parse(''));
-
-  // Future<bool> _willPopCallback() async {
-  //   bool canNavigate = await _controller.canGoBack();
-  //   if (canNavigate) {
-  //     _controller.goBack();
-  //   }
-  //   return false;
-  // }
-
-  final Completer<WebViewController> _controller = Completer<WebViewController>();
 
   Future<bool> _willPopCallback() async {
     WebViewController webViewController = await _controller.future;
@@ -67,23 +41,21 @@ class _HomeScreenState extends State<HomeScreen> {
     return false;
   }
 
-  final cookieManager = WebviewCookieManager();
-
-  void getCookie() async {
-    final gotCookies = await cookieManager.getCookies('https://youtube.com');
-    for (var item in gotCookies) {
-      print(item);
-    }
-  }
-
-  void setCookie() async {
-    await cookieManager.setCookies([
-      Cookie('cookieName', 'cookieValue')
-        ..domain = 'youtube.com'
-        ..expires = DateTime.now().add(const Duration(days: 10))
-        ..httpOnly = false,
-    ]);
-  }
+  // void getCookie() async {
+  //   final gotCookies = await cookieManager.getCookies('https://youtube.com');
+  //   for (var item in gotCookies) {
+  //     print(item);
+  //   }
+  // }
+  //
+  // void setCookie() async {
+  //   await cookieManager.setCookies([
+  //     Cookie('cookieName', 'cookieValue')
+  //       ..domain = 'youtube.com'
+  //       ..expires = DateTime.now().add(const Duration(days: 10))
+  //       ..httpOnly = false,
+  //   ]);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -116,19 +88,23 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       );
     } else if (state is ShowWebView) {
-      url = BlocProvider.of<InitCubit>(context).remoteConfig?.url ?? '';
-      // _controller..loadRequest(Uri.parse(url))..setJavaScriptMode(JavaScriptMode.unrestricted);
+      String url = BlocProvider.of<InitCubit>(context).remoteConfig?.url ?? '';
 
       homeScreenWidget = WebView(
         initialUrl: url,
         javascriptMode: JavascriptMode.unrestricted,
-        onWebViewCreated: (WebViewController webViewController) {
+        onWebViewCreated: (WebViewController webViewController) async {
           _controller.complete(webViewController);
+          await cookieManager.setCookies([
+            Cookie(cookieName, cookieValue)
+              ..domain = domain
+              ..expires = DateTime.now().add(const Duration(days: 10))
+              ..httpOnly = false
+          ]);
         },
       );
-      //WebViewWidget(controller: _controller);
     } else if (state is ShowPlug) {
-      homeScreenWidget = PlugWidget();
+      homeScreenWidget = const PlugWidget();
     }
 
     return homeScreenWidget;
