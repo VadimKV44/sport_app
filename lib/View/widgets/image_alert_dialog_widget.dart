@@ -13,16 +13,14 @@ class ImageAlertDialogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      child: Expanded(
-        child: Container(
-          decoration: BoxDecoration(
-            color: MainColors.kWhiteColor1,
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16.0),
-            child: Image.asset(image),
-          ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: MainColors.kWhiteColor1,
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16.0),
+          child: Image.asset(image),
         ),
       ),
     );
