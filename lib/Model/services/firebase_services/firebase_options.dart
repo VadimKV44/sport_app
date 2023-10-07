@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDPmNikiNdypAa6nF7YPtDgaALqcJynSMM',
-    appId: '1:132993401266:android:90b61abb554abf091f64ab',
-    messagingSenderId: '132993401266',
-    projectId: 'sport-app-a4d8c',
-    storageBucket: 'sport-app-a4d8c.appspot.com',
+    apiKey: 'AIzaSyAToeOqk5aJZFPHfzYG2PgFVWDPKseZ0UY',
+    appId: '1:222918409295:android:72bbda5a8132ba29617e3a',
+    messagingSenderId: '222918409295',
+    projectId: 'fvgjnt',
+    storageBucket: 'fvgjnt.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyC3xIm2kKNYsvgIsTWJrtLpXCQ4jz9kWcg',
     appId: '1:132993401266:ios:244f1e3609179c581f64ab',
-    messagingSenderId: '132993401266',
-    projectId: 'sport-app-a4d8c',
-    storageBucket: 'sport-app-a4d8c.appspot.com',
+    messagingSenderId: '222918409295',
+    projectId: 'fvgjnt',
+    storageBucket: 'fvgjnt.appspot.com',
     iosBundleId: 'com.example.sportApp',
   );
 }
