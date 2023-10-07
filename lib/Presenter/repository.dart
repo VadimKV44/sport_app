@@ -5,14 +5,12 @@ import 'package:sport_app/Model/local_storage/data_for_plug/exercises_for_press.
 import 'package:sport_app/Model/local_storage/data_for_plug/leg_exercises.dart';
 import 'package:sport_app/Model/local_storage/data_for_plug/shoulder_exercises.dart';
 import 'package:sport_app/Model/models/exercise_model.dart';
-import 'package:sport_app/Model/models/remote_config_model.dart';
 import 'package:sport_app/Model/services/firebase_services/firebase_remote_config_services.dart';
 
 class Repository {
 
-  Future<RemoteConfigModel> getUrl(FirebaseRemoteConfigService firebaseRemoteConfigService) async {
-    final json = firebaseRemoteConfigService.getEventInfoJson();
-    return remoteConfigModelFromJson(json);
+  Future<String> getUrl(FirebaseRemoteConfigService firebaseRemoteConfigService) async {
+    return  firebaseRemoteConfigService.getEventInfoJson();
   }
 
   static List<ExerciseModel> getExercisesForChest() {

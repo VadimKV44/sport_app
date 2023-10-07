@@ -5,7 +5,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:meta/meta.dart';
 import 'package:sport_app/Model/local_storage/shared_preferences.dart';
-import 'package:sport_app/Model/models/remote_config_model.dart';
 import 'package:sport_app/Model/services/firebase_services/firebase_remote_config_services.dart';
 import 'package:sport_app/Presenter/repository.dart';
 
@@ -16,7 +15,7 @@ class InitCubit extends Cubit<InitState> {
 
   final FirebaseRemoteConfigService firebaseRemoteConfigService;
   Repository repository = Repository();
-  RemoteConfigModel? remoteConfig;
+  String? remoteConfigUrl;
   bool connect = false;
 
   void checkUrl() async {
@@ -25,7 +24,7 @@ class InitCubit extends Cubit<InitState> {
     if (data.isEmpty) {
       getUrl();
     } else {
-      remoteConfig = RemoteConfigModel(url: data);
+      remoteConfigUrl = data;
       await checkInternet();
       if (connect) {
         emit(ShowWebView());
@@ -39,12 +38,12 @@ class InitCubit extends Cubit<InitState> {
     try {
       await checkInternet();
       if (connect) {
-        remoteConfig = await repository.getUrl(firebaseRemoteConfigService);
+        remoteConfigUrl = await repository.getUrl(firebaseRemoteConfigService);
         bool openPlug = await getDeviceInfo();
-        if ((remoteConfig?.url ?? '').isEmpty || openPlug) {
+        if ((remoteConfigUrl ?? '').isEmpty || openPlug) {
           emit(ShowPlug());
         } else {
-          await LocalStorage.setUrl(remoteConfig?.url ?? '');
+          await LocalStorage.setUrl(remoteConfigUrl ?? '');
           emit(ShowWebView());
         }
       }

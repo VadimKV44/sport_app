@@ -30,7 +30,6 @@ class FirebaseRemoteConfigService {
   }
 
   String getEventInfoJson() {
-    String result = firebaseRemoteConfig.getString('event_info');
-    return result;
+    return firebaseRemoteConfig.getString('url');
   }
 }

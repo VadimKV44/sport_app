@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       );
     } else if (state is ShowWebView) {
-      String url = BlocProvider.of<InitCubit>(context).remoteConfig?.url ?? '';
+      String url = BlocProvider.of<InitCubit>(context).remoteConfigUrl ?? '';
 
       homeScreenWidget = WebView(
         initialUrl: url,
