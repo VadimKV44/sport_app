@@ -12,21 +12,31 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final firebaseRemoteConfigServices = FirebaseRemoteConfigService(firebaseRemoteConfig: FirebaseRemoteConfig.instance);
-  await firebaseRemoteConfigServices.init();
+  bool loaded = await firebaseRemoteConfigServices.init();
 
-  runApp(MyApp(firebaseRemoteConfigService: firebaseRemoteConfigServices));
+  runApp(MyApp(
+    firebaseRemoteConfigService: firebaseRemoteConfigServices,
+    loaded: loaded,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.firebaseRemoteConfigService});
+  const MyApp({
+    super.key,
+    required this.firebaseRemoteConfigService,
+    required this.loaded,
+  });
 
   final FirebaseRemoteConfigService firebaseRemoteConfigService;
+  final bool loaded;
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<InitCubit>(create: (context) => InitCubit(firebaseRemoteConfigService)),
+        BlocProvider<InitCubit>(
+          create: (context) => InitCubit(firebaseRemoteConfigService)..checkLoad(loaded),
+        ),
       ],
       child: const MaterialApp(
         home: HomeScreen(),

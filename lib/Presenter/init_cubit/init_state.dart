@@ -9,6 +9,4 @@ class Loading extends InitState {}
 
 class ShowWebView extends InitState {}
 
-class Error extends InitState {}
-
 class ShowPlug extends InitState {}

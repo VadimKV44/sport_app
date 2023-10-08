@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:bloc/bloc.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:meta/meta.dart';
 import 'package:sport_app/Model/local_storage/shared_preferences.dart';
@@ -16,39 +13,36 @@ class InitCubit extends Cubit<InitState> {
   final FirebaseRemoteConfigService firebaseRemoteConfigService;
   Repository repository = Repository();
   String? remoteConfigUrl;
-  bool connect = false;
+  bool loaded = false;
+
+  void checkLoad(bool load) {
+    loaded = load;
+    if (!load) {
+      emit(ShowPlug());
+    }
+  }
 
   void checkUrl() async {
-    emit(Loading());
-    String data = await LocalStorage.getUrl();
-    if (data.isEmpty) {
-      getUrl();
-    } else {
-      remoteConfigUrl = data;
-      await checkInternet();
-      if (connect) {
-        emit(ShowWebView());
+    if (loaded) {
+      emit(Loading());
+      String data = await LocalStorage.getUrl();
+      if (data.isEmpty) {
+        getUrl();
       } else {
-        emit(Error());
+        remoteConfigUrl = data;
+        emit(ShowWebView());
       }
     }
   }
 
   void getUrl() async {
-    try {
-      await checkInternet();
-      if (connect) {
-        remoteConfigUrl = await repository.getUrl(firebaseRemoteConfigService);
-        bool openPlug = await getDeviceInfo();
-        if ((remoteConfigUrl ?? '').isEmpty || openPlug) {
-          emit(ShowPlug());
-        } else {
-          await LocalStorage.setUrl(remoteConfigUrl ?? '');
-          emit(ShowWebView());
-        }
-      }
-    } on SocketException catch (_) {
-      emit(Error());
+    remoteConfigUrl = await repository.getUrl(firebaseRemoteConfigService);
+    bool openPlug = await getDeviceInfo();
+    if ((remoteConfigUrl ?? '').isEmpty || openPlug) {
+      emit(ShowPlug());
+    } else {
+      await LocalStorage.setUrl(remoteConfigUrl ?? '');
+      emit(ShowWebView());
     }
   }
 
@@ -70,13 +64,6 @@ class InitCubit extends Cubit<InitState> {
     }
 
     return openPlug;
-  }
-
-  Future<void> checkInternet() async {
-    final connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult != ConnectivityResult.none && connectivityResult != ConnectivityResult.bluetooth) {
-      connect = true;
-    }
   }
 }
 

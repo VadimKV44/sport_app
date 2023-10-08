@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 
@@ -10,7 +8,8 @@ class FirebaseRemoteConfigService {
     required this.firebaseRemoteConfig,
   });
 
-  Future<void> init() async {
+  Future<bool> init() async {
+    bool loaded = false;
     try {
       await firebaseRemoteConfig.ensureInitialized();
       await firebaseRemoteConfig.setConfigSettings(
@@ -20,13 +19,12 @@ class FirebaseRemoteConfigService {
         ),
       );
       await firebaseRemoteConfig.fetchAndActivate();
+      loaded = true;
     } on FirebaseException catch (e, st) {
-      developer.log(
-        'Unable to initialize Firebase Remote Config',
-        error: e,
-        stackTrace: st,
-      );
+      loaded = false;
     }
+
+    return loaded;
   }
 
   String getEventInfoJson() {
