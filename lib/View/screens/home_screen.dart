@@ -14,7 +14,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -28,7 +27,17 @@ class _HomeScreenState extends State<HomeScreen> {
         return Scaffold(
           backgroundColor: MainColors.kWhiteColor1,
           body: SafeArea(
-            child: getHomeScreenWidget(state),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/images/background_image.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                getHomeScreenWidget(state),
+              ],
+            ),
           ),
         );
       },

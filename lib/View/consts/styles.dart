@@ -19,12 +19,28 @@ class MainStyles {
     );
   }
 
+  static TextStyle kWhiteColor1W600(double fontSize) {
+    return TextStyle(
+      fontSize: fontSize,
+      fontWeight: FontWeight.w600,
+      color: MainColors.kWhiteColor1,
+    );
+  }
+
   ///   FontWeight.W400
   static TextStyle kBlackColor1W400(double fontSize) {
     return TextStyle(
       fontSize: fontSize,
       fontWeight: FontWeight.w400,
       color: MainColors.kBlackColor1,
+    );
+  }
+
+  static TextStyle kWhiteColor1W400(double fontSize) {
+    return TextStyle(
+      fontSize: fontSize,
+      fontWeight: FontWeight.w400,
+      color: MainColors.kWhiteColor1,
     );
   }
 }

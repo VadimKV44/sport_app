@@ -15,12 +15,12 @@ class PlugWidget extends StatelessWidget {
         children: [
           Text(
             Strings.basicExercises,
-            style: MainStyles.kBlackColor1W600(30.0),
+            style: MainStyles.kWhiteColor1W600(30.0),
           ),
           const SizedBox(height: 20.0),
           Text(
             Strings.description,
-            style: MainStyles.kBlackColor1W400(24.0),
+            style: MainStyles.kWhiteColor1W400(24.0),
           ),
           const SizedBox(height: 40.0),
           CustomButtonWidget(
